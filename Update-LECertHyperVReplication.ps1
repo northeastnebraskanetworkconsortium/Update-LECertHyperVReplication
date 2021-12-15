@@ -40,6 +40,13 @@ if($cert){
        
     # Remove old certs
     ls Cert:\LocalMachine\My | ? Subject -eq "CN=$MainDomain" | ? NotAfter -lt $(get-date) | remove-item -Force
+    
+    # Update thumbrprint of replication certificate
+    $vms = Get-VMReplication
+    foreach ($vm in $vms) {
+        Set-VMReplication -VMName $vm.Name -CertificateThumbprint $cert.Thumbprint
+        Logging -Message "Changed replication cert for $($vm.Name)"
+    }
 }else{
     Logging -Message "No need to update certifcate" 
 }
