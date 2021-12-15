@@ -37,8 +37,7 @@ else {
 if($cert){
     Logging -Message "Importing certificate to Cert:\LocalMachine\My"
     Import-PfxCertificate -FilePath $cert.PfxFullChain -CertStoreLocation Cert:\LocalMachine\My -Password ('poshacme' | ConvertTo-SecureString -AsPlainText -Force)
-    Logging -Message "Removing Current Binding to :443"
-    
+       
     # Remove old certs
     ls Cert:\LocalMachine\My | ? Subject -eq "CN=$MainDomain" | ? NotAfter -lt $(get-date) | remove-item -Force
 }else{
